@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProductsStart, fetchProductsSuccess, fetchProductsFailure } from '../redux/productSlice';
 import { addSaleSuccess } from '../redux/saleSlice';
 import { useNavigate } from 'react-router-dom';
+import SalesForm from '../components/SalesForm';
 
 const SalesPage = () => {
     const dispatch = useDispatch();
@@ -30,19 +31,16 @@ const SalesPage = () => {
         fetchProducts();
     }, [dispatch]);
 
-    const handleAddToCart = () => {
-        if (!selectedProduct) return;
-        const product = products.find(p => p._id === selectedProduct);
-        if (product.quantity < quantity) {
-            alert('Insufficient stock');
-            return;
-        }
-
-        const existingItem = cart.find(item => item.productId === selectedProduct);
+    const handleAddToCart = (product) => {
+        const existingItem = cart.find(item => item.productId === product.productId);
         if (existingItem) {
-            setCart(cart.map(item => item.productId === selectedProduct ? { ...item, quantity: item.quantity + parseInt(quantity) } : item));
+            if (existingItem.quantity + product.quantity > product.stock) {
+                alert('Insufficient stock');
+                return;
+            }
+            setCart(cart.map(item => item.productId === product.productId ? { ...item, quantity: item.quantity + product.quantity } : item));
         } else {
-            setCart([...cart, { productId: selectedProduct, name: product.name, price: product.price, quantity: parseInt(quantity) }]);
+            setCart([...cart, product]);
         }
     };
 
@@ -86,46 +84,28 @@ const SalesPage = () => {
                     </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                        <h2 className="text-xl font-bold mb-4">Customer Details</h2>
-                        <input
-                            type="text"
-                            placeholder="Customer Name"
-                            className="w-full p-2 border rounded mb-2"
-                            value={customerName}
-                            onChange={(e) => setCustomerName(e.target.value)}
-                        />
-                        <input
-                            type="text"
-                            placeholder="Customer Phone"
-                            className="w-full p-2 border rounded"
-                            value={customerPhone}
-                            onChange={(e) => setCustomerPhone(e.target.value)}
-                        />
+                <div className="flex gap-6 mb-6">
+                    <div className="w-1/2">
+                        <div className="bg-white p-6 rounded shadow-md">
+                            <h2 className="text-xl font-bold mb-4">Customer Details</h2>
+                            <input
+                                type="text"
+                                placeholder="Customer Name"
+                                className="w-full p-2 border rounded mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value={customerName}
+                                onChange={(e) => setCustomerName(e.target.value)}
+                            />
+                            <input
+                                type="text"
+                                placeholder="Customer Phone"
+                                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value={customerPhone}
+                                onChange={(e) => setCustomerPhone(e.target.value)}
+                            />
+                        </div>
                     </div>
-                    <div>
-                        <h2 className="text-xl font-bold mb-4">Add Items</h2>
-                        <select
-                            className="w-full p-2 border rounded mb-2"
-                            value={selectedProduct}
-                            onChange={(e) => setSelectedProduct(e.target.value)}
-                        >
-                            <option value="">Select Product API</option>
-                            {products.map(p => (
-                                <option key={p._id} value={p._id}>{p.name} - ${p.price} (Stock: {p.quantity})</option>
-                            ))}
-                        </select>
-                        <input
-                            type="number"
-                            min="1"
-                            className="w-full p-2 border rounded mb-2"
-                            value={quantity}
-                            onChange={(e) => setQuantity(e.target.value)}
-                        />
-                        <button onClick={handleAddToCart} className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Add to Cart
-                        </button>
+                    <div className="w-1/2">
+                        <SalesForm products={products} onAddItem={handleAddToCart} />
                     </div>
                 </div>
 
