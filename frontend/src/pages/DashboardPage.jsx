@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../redux/authSlice';
 import { useNavigate } from 'react-router-dom';
+import TopSellingCategories from '../components/TopSellingCategories';
 
 const DashboardPage = () => {
     const { user } = useSelector((state) => state.auth);
@@ -60,6 +61,7 @@ const DashboardPage = () => {
                         )}
                     </div>
                 </div>
+                <TopSellingCategories />
             </div>
         </div>
     );
