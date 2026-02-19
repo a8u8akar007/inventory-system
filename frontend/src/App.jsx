@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout';
 import { Toaster } from 'react-hot-toast';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
@@ -14,10 +15,12 @@ function App() {
             <Routes>
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/inventory" element={<InventoryPage />} />
-                <Route path="/sales" element={<SalesPage />} />
-                <Route path="/admin" element={<AdminDashboardPage />} />
+                <Route element={<Layout />}>
+                    <Route path="/dashboard" element={<DashboardPage />} />
+                    <Route path="/inventory" element={<InventoryPage />} />
+                    <Route path="/sales" element={<SalesPage />} />
+                    <Route path="/admin" element={<AdminDashboardPage />} />
+                </Route>
             </Routes>
         </Router>
     );
