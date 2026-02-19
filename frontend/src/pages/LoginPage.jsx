@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { loginStart, loginSuccess, loginFailure } from '../redux/authSlice';
@@ -21,14 +22,15 @@ const LoginPage = () => {
             const data = await response.json();
             if (response.ok) {
                 dispatch(loginSuccess(data));
+                toast.success('Login Successful!');
                 navigate('/dashboard');
             } else {
                 dispatch(loginFailure(data.message));
-                alert(data.message); // Show error to user
+                toast.error(data.message);
             }
         } catch (err) {
             dispatch(loginFailure('Something went wrong'));
-            alert('Something went wrong');
+            toast.error('Something went wrong');
         }
     };
 

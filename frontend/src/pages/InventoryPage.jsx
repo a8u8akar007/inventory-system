@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProductsStart, fetchProductsSuccess, fetchProductsFailure, addProductSuccess, deleteProductSuccess, updateProductSuccess } from '../redux/productSlice';
 import { useNavigate } from 'react-router-dom';
@@ -42,11 +43,12 @@ const InventoryPage = () => {
             if (response.ok) {
                 dispatch(addProductSuccess(data));
                 setNewProduct({ name: '', category: '', price: '', quantity: '' });
+                toast.success('Product added successfully');
             } else {
-                alert(data.message);
+                toast.error(data.message);
             }
         } catch (err) {
-            alert('Failed to add product');
+            toast.error('Failed to add product');
         }
     };
 
@@ -61,11 +63,12 @@ const InventoryPage = () => {
             });
             if (response.ok) {
                 dispatch(deleteProductSuccess(id));
+                toast.success('Product deleted successfully');
             } else {
-                alert('Failed to delete product');
+                toast.error('Failed to delete product');
             }
         } catch (err) {
-            alert('Error deleting product');
+            toast.error('Error deleting product');
         }
     };
 
@@ -84,11 +87,12 @@ const InventoryPage = () => {
             if (response.ok) {
                 dispatch(updateProductSuccess(data));
                 setEditingProduct(null);
+                toast.success('Product updated successfully');
             } else {
-                alert(data.message);
+                toast.error(data.message);
             }
         } catch (err) {
-            alert('Failed to update product');
+            toast.error('Failed to update product');
         }
     };
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProductsStart, fetchProductsSuccess, fetchProductsFailure } from '../redux/productSlice';
 import { addSaleSuccess } from '../redux/saleSlice';
@@ -35,7 +36,7 @@ const SalesPage = () => {
         const existingItem = cart.find(item => item.productId === product.productId);
         if (existingItem) {
             if (existingItem.quantity + product.quantity > product.stock) {
-                alert('Insufficient stock');
+                toast.error('Insufficient stock');
                 return;
             }
             setCart(cart.map(item => item.productId === product.productId ? { ...item, quantity: item.quantity + product.quantity } : item));
@@ -46,7 +47,7 @@ const SalesPage = () => {
 
     const handleCheckout = async () => {
         if (cart.length === 0 || !customerName || !customerPhone) {
-            alert('Please fill in customer details and add items to cart.');
+            toast.error('Please fill in customer details and add items to cart.');
             return;
         }
 
@@ -65,12 +66,12 @@ const SalesPage = () => {
                 setCart([]);
                 setCustomerName('');
                 setCustomerPhone('');
-                alert('Sale completed successfully!');
+                toast.success('Sale completed successfully!');
             } else {
-                alert(data.message);
+                toast.error(data.message);
             }
         } catch (err) {
-            alert('Checkout failed');
+            toast.error('Checkout failed');
         }
     };
 
