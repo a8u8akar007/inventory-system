@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,6 +11,8 @@ const AdminDashboardPage = () => {
         totalSalesAmount: 0,
         lowStockProducts: []
     });
+    const [products, setProducts] = useState([]);
+    const [sales, setSales] = useState([]);
 
     useEffect(() => {
         if (!user || user.role !== 'Admin') {
@@ -31,8 +34,56 @@ const AdminDashboardPage = () => {
             }
         };
 
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/api/products', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    setProducts(data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch products');
+            }
+        };
+
+        const fetchSales = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/api/sales', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    setSales(data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch sales');
+            }
+        };
+
         fetchStats();
+        fetchProducts();
+        fetchSales();
     }, [user, token, navigate]);
+
+    // Prepare data for the Bar Chart (Product Stock)
+    const stockData = products.map(product => ({
+        name: product.name,
+        quantity: product.quantity
+    }));
+
+    // Prepare data for the Line Chart (Sales Trends)
+    const salesData = sales.reduce((acc, sale) => {
+        const date = new Date(sale.createdAt).toLocaleDateString();
+        const existing = acc.find(item => item.date === date);
+        if (existing) {
+            existing.total += sale.totalAmount;
+        } else {
+            acc.push({ date, total: sale.totalAmount });
+        }
+        return acc;
+    }, []);
 
     return (
         <div className="min-h-screen bg-gray-100 p-8">
@@ -52,6 +103,39 @@ const AdminDashboardPage = () => {
                     <div className="bg-white p-6 rounded-lg shadow border border-green-200">
                         <h2 className="text-xl font-bold text-gray-700 mb-2">Total Products</h2>
                         <p className="text-4xl font-bold text-green-600">{stats.totalProducts}</p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <div className="bg-white p-6 rounded-lg shadow">
+                        <h3 className="text-xl font-bold text-gray-800 mb-4">Stock Levels</h3>
+                        <div className="h-64">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={stockData}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Bar dataKey="quantity" fill="#3b82f6" name="Quantity" />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                    <div className="bg-white p-6 rounded-lg shadow">
+                        <h3 className="text-xl font-bold text-gray-800 mb-4">Sales Trends</h3>
+                        <div className="h-64">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={salesData}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="date" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Line type="monotone" dataKey="total" stroke="#10b981" name="Total Sales ($)" strokeWidth={2} />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
                 </div>
 
