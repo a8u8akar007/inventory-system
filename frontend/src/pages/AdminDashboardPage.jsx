@@ -3,6 +3,8 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const AdminDashboardPage = () => {
     const { token, user } = useSelector((state) => state.auth);
     const navigate = useNavigate();
@@ -22,7 +24,7 @@ const AdminDashboardPage = () => {
 
         const fetchStats = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/reports/dashboard', {
+                const response = await fetch(`${API_URL}/api/reports/dashboard`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await response.json();
@@ -36,7 +38,7 @@ const AdminDashboardPage = () => {
 
         const fetchProducts = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/products', {
+                const response = await fetch(`${API_URL}/api/products`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await response.json();
@@ -50,7 +52,7 @@ const AdminDashboardPage = () => {
 
         const fetchSales = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/sales', {
+                const response = await fetch(`${API_URL}/api/sales`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await response.json();

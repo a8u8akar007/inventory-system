@@ -5,6 +5,8 @@ import { fetchProductsStart, fetchProductsSuccess, fetchProductsFailure, addProd
 import { useNavigate } from 'react-router-dom';
 import ProductTable from '../components/ProductTable';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const InventoryPage = () => {
     const dispatch = useDispatch();
     const { products, loading, error } = useSelector((state) => state.products);
@@ -18,7 +20,7 @@ const InventoryPage = () => {
         const fetchProducts = async () => {
             dispatch(fetchProductsStart());
             try {
-                const response = await fetch('http://localhost:5000/api/products');
+                const response = await fetch(`${API_URL}/api/products`);
                 const data = await response.json();
                 dispatch(fetchProductsSuccess(data));
             } catch (err) {
@@ -31,7 +33,7 @@ const InventoryPage = () => {
     const handleAddProduct = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:5000/api/products', {
+            const response = await fetch(`${API_URL}/api/products`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -55,7 +57,7 @@ const InventoryPage = () => {
     const handleDeleteProduct = async (id) => {
         if (!window.confirm('Are you sure?')) return;
         try {
-            const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+            const response = await fetch(`${API_URL}/api/products/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -75,7 +77,7 @@ const InventoryPage = () => {
     const handleUpdateProduct = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://localhost:5000/api/products/${editingProduct._id}`, {
+            const response = await fetch(`${API_URL}/api/products/${editingProduct._id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

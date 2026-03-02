@@ -1,0 +1,4 @@
+[dotenv@17.3.1] injecting env (3) from .env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Testing connection to: mongodb+srv://buttabubakar213_db_user:pak1stan7289@cluster0.tlm1gva.mongodb.net/?appName=Cluster0
+ERROR: Could not connect to MongoDB.
+Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted. Make sure your current IP address is on your Atlas cluster's IP whitelist: https://www.mongodb.com/docs/atlas/security-whitelist/

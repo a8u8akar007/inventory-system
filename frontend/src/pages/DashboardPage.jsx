@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const DashboardPage = () => {
     const { user, token } = useSelector((state) => state.auth);
     const navigate = useNavigate();
@@ -12,7 +14,7 @@ const DashboardPage = () => {
         const fetchDashboardData = async () => {
             try {
                 // Fetch products count
-                const prodRes = await fetch('http://localhost:5000/api/products');
+                const prodRes = await fetch(`${API_URL}/api/products`);
                 const products = await prodRes.json();
 
                 // Fetch sales for revenue (if endpoint available, otherwise mock or calculate from recent sales)
@@ -136,36 +138,6 @@ const DashboardPage = () => {
                 )}
             </div>
 
-            {/* Recent Activity Placeholder */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-8">
-                <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                    <h2 className="text-lg font-semibold text-gray-800">Recent Activity</h2>
-                    <button className="text-sm text-blue-600 hover:text-blue-800 font-medium">View All</button>
-                </div>
-                <div className="p-6">
-                    <div className="flex items-start space-x-4 mb-6">
-                        <div className="h-2 w-2 mt-2 rounded-full bg-green-500"></div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-800">New sale recorded #1024</p>
-                            <p className="text-xs text-gray-500">2 minutes ago</p>
-                        </div>
-                    </div>
-                    <div className="flex items-start space-x-4 mb-6">
-                        <div className="h-2 w-2 mt-2 rounded-full bg-blue-500"></div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-800">Stock updated for "Wireless Mouse"</p>
-                            <p className="text-xs text-gray-500">1 hour ago</p>
-                        </div>
-                    </div>
-                    <div className="flex items-start space-x-4">
-                        <div className="h-2 w-2 mt-2 rounded-full bg-yellow-500"></div>
-                        <div>
-                            <p className="text-sm font-medium text-gray-800">New customer registered</p>
-                            <p className="text-xs text-gray-500">3 hours ago</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 };
